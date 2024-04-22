@@ -42,6 +42,37 @@ async function getUser(id) {
 }
 
 /**
+ * Mendapatkan baris user dengan nomor halaman
+ * @param {number} page_number - nomor halaman
+ * @param {number} page_size - banyak user per halaman
+ * @returns {Object} - Objek yang terdapat dalam data user
+ */
+async function getUsers(page_number, page_size) {
+  const users = await usersRepository.getUsers();
+
+  const count = users.length;
+  const total_pages = page_size !== 0 ? Math.ceil(count / page_size) : 0;
+  const start_index = (page_number - 1) * page_size;
+  const end_index = Math.min(start_index + page_size, count);
+
+  const results = users.slice(start_index, end_index).map((user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  }));
+
+  return {
+    page_number: page_number,
+    page_size: page_size,
+    count: results.length,
+    total_pages: total_pages,
+    has_previous_page: page_number > 1,
+    has_next_page: page_number < total_pages,
+    data: results,
+  };
+}
+
+/**
  * Create new user
  * @param {string} name - Name
  * @param {string} email - Email

@@ -39,6 +39,29 @@ async function getUser(request, response, next) {
 }
 
 /**
+ * Mengambil daftar user request dengan halaman
+ * @param {object} request - Express request objek
+ * @param {object} response - Express response objek
+ * @param {object} next - Express route middlewares
+ * @returns {object} Mengambil objek atau melewati error
+ */
+async function getUsers(request, response, next) {
+  try {
+    // Mengambil nomor halaman dari query parameter dimana defaultnya adalah 1
+    const pageNumber = parseInt(request.query.page_number) || 1;
+
+    // Mengambil ukuran halaman dari query parameter dimana defaultnya adalah 10
+    const pageSize = parseInt(request.query.page_size) || 10;
+
+    const users = await usersService.getUsers(pageNumber, pageSize);
+
+    return response.status(200).json(users);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * Handle create user request
  * @param {object} request - Express request object
  * @param {object} response - Express response object

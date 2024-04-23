@@ -29,14 +29,14 @@ module.exports = (app) => {
 
   // Mengambil data yang dimunculkan per halaman dengan opsi pengurutan
   route.get(
-    '/:field_name/:sort_order',
+    '/field_name=:field_name/sort_order=:sort_order',
     authenticationMiddleware,
     usersControllers.getUsers
   );
 
   // Mengambil data user dengan email atau name, dan search key untuk mencari kata kunci
   route.get(
-    '/:field_name/:search_key',
+    '/field_name=:field_name/search_key=:search_key',
     authenticationMiddleware,
     usersControllers.getUsers
   );

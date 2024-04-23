@@ -48,12 +48,12 @@ async function getUser(request, response, next) {
 async function getUsers(request, response, next) {
   try {
     // Mengambil nomor halaman dari query parameter dimana defaultnya adalah 1
-    const pageNumber = parseInt(request.query.page_number) || 1;
+    const page_number = parseInt(request.query.page_number) || 1;
 
     // Mengambil ukuran halaman dari query parameter dimana defaultnya adalah 10
-    const pageSize = parseInt(request.query.page_size) || 10;
+    const page_size = parseInt(request.query.page_size) || 10;
 
-    const users = await usersService.getUsers(pageNumber, pageSize);
+    const users = await usersService.getUsers(page_number, page_size);
 
     return response.status(200).json(users);
   } catch (error) {

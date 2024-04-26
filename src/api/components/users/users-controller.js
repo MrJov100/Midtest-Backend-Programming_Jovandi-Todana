@@ -2,19 +2,64 @@ const usersService = require('./users-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
 
 /**
- * Handle get list of users request
- * @param {object} request - Express request object
- * @param {object} response - Express response object
- * @param {object} next - Express route middlewares
- * @returns {object} Response object or pass an error to the next route
+ * Mengatasi permintaan untuk mendapat daftar user
+ * @param {object} request - Objek request Express
+ * @param {object} response - Objek respons Express
+ * @param {object} next - Middleware rute Express
+ * @returns {object} Objek respons untuk meneruskan kesalahan ke berikutnya
  */
 async function getUsers(request, response, next) {
   try {
-    const users = await usersService.getUsers();
+    // fungsi constant untuk mendapat paramter query reuqest
+    const { page_number, page_size, search, sort } = request.query;
+    // fungsi constant options untuk menciptakan objek berdasarkan parameter query
+    const options = {
+      page_number: parseInt(page_number) || 1, // nomor halaman dengan default: 1
+      page_size: parseInt(page_size) || 10, // jumlah data per halaman dengan default 10
+      search: parseSearchQuery(search), // opsi untuk pencarian
+      sort: parseSortQuery(sort), // opsi untuk urut
+    };
+
+    // fungsi untuk mendapatkan daftar user berdasarkan opsi
+    const users = await usersService.getUsers(options);
+
+    // fungsi untuk mengembalikan daftar user sebagai respons
     return response.status(200).json(users);
   } catch (error) {
     return next(error);
   }
+}
+
+/**
+ * Melakukan parse string query pengurutan menjadi sebuah objek
+ * @param {string} sortQuery - String query pengurutan
+ * @returns {Object} objek opsi pengurutan data
+ */
+function parseSortQuery(sortQuery) {
+  // fungsi jika tidak terdapat query pengurutan,
+  // maka akan dikembalikan sebuah objek kosong
+  if (!sortQuery) return {};
+
+  // Memecah string query pengurutan menjadi field dan sort
+  const [field, order] = sortQuery.split(':');
+
+  // Mengembalikan objek opsi pengurutan
+  return { field, order };
+}
+
+/**
+ * Melakukan parse string query pencarian menjadi sebauh obyek
+ * @param {string} searchQuery - String query pencarian
+ * @returns {Object} objek opsi pencarian data
+ */
+function parseSearchQuery(searchQuery) {
+  // fungsi bekerja jika tidak ada query pencarian,
+  // maka akan kembalikan sebuah objek ksong
+  if (!searchQuery) return {};
+  // Memecah string query pencarian menjadi field dan kata kunci
+  const [field, key] = searchQuery.split(':');
+  // Mengembalikan objek opsi pencarian
+  return { field, key };
 }
 
 /**
@@ -33,29 +78,6 @@ async function getUser(request, response, next) {
     }
 
     return response.status(200).json(user);
-  } catch (error) {
-    return next(error);
-  }
-}
-
-/**
- * Mengambil daftar user request dengan halaman
- * @param {object} request - Express request objek
- * @param {object} response - Express response objek
- * @param {object} next - Express route middlewares
- * @returns {object} Mengambil objek atau melewati error
- */
-async function getUsers(request, response, next) {
-  try {
-    // Mengambil nomor halaman dari query parameter dimana defaultnya adalah 1
-    const page_number = parseInt(request.query.page_number) || 1;
-
-    // Mengambil ukuran halaman dari query parameter dimana defaultnya adalah 10
-    const page_size = parseInt(request.query.page_size) || 10;
-
-    const users = await usersService.getUsers(page_number, page_size);
-
-    return response.status(200).json(users);
   } catch (error) {
     return next(error);
   }

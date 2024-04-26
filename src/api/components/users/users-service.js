@@ -2,23 +2,32 @@ const usersRepository = require('./users-repository');
 const { hashPassword, passwordMatched } = require('../../../utils/password');
 
 /**
- * Get list of users
- * @returns {Array}
+ * Mengambil daftar user dengan nomor halaman, pencarian kata kunci dan opsi pencarian asc/desc
+ * @param {Object} options - parameter options berupa object
+ * @returns {Object} - Mengembalikan object yang berisi data user
  */
-async function getUsers() {
-  const users = await usersRepository.getUsers();
 
-  const results = [];
-  for (let i = 0; i < users.length; i += 1) {
-    const user = users[i];
-    results.push({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    });
-  }
+async function getUsers(options) {
+  // Panggil fungsi dari usersRepository dengan menggunakan options object
+  const users = await usersRepository.getUsers(options);
 
-  return results;
+  // Menampilkan data pengguna seperti id, name, email
+  const results = users.data.map((user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  }));
+
+  // fungsi ini akan menampilkan semua daftar yang perlu ditampilkan
+  return {
+    page_number: users.page_number, // menampilkan nomor halaman
+    page_size: users.page_size, // menampilkan banyak pengguna tiap halaman
+    count: users.count, // menampilkan total pengguna
+    total_pages: users.total_pages, // menampilkan total halaman
+    has_previous_page: users.has_previous_page, // menyatakan halaman sebelumnya dengan true / false
+    has_next_page: users.has_next_page, // menyatakan halaman selanjutnya dengan true / false
+    data: results, // data pengguna seperti id, name, email
+  };
 }
 
 /**
@@ -38,37 +47,6 @@ async function getUser(id) {
     id: user.id,
     name: user.name,
     email: user.email,
-  };
-}
-
-/**
- * Mendapatkan baris user dengan nomor halaman
- * @param {number} page_number - nomor halaman
- * @param {number} page_size - banyak user per halaman
- * @returns {Object} - Objek yang terdapat dalam data user
- */
-async function getUsers(page_number, page_size) {
-  const users = await usersRepository.getUsers();
-
-  const count = users.length;
-  const total_pages = page_size !== 0 ? Math.ceil(count / page_size) : 0;
-  const start_index = (page_number - 1) * page_size;
-  const end_index = Math.min(start_index + page_size, count);
-
-  const results = users.slice(start_index, end_index).map((user) => ({
-    id: user.id,
-    name: user.name,
-    email: user.email,
-  }));
-
-  return {
-    page_number: page_number,
-    page_size: page_size,
-    count: results.length,
-    total_pages: total_pages,
-    has_previous_page: page_number > 1,
-    has_next_page: page_number < total_pages,
-    data: results,
   };
 }
 

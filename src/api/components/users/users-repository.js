@@ -7,7 +7,7 @@ const { User } = require('../../../models');
  */
 async function getUsers(options) {
   // fungsi constant dari parameter options dengan memiliki nilai default di masing-masing objek
-  const { page_number = 1, page_size = 10, sort = {}, search = {} } = options;
+  const { page_number = 1, page_size = 10, search = {}, sort = {} } = options;
 
   // fungsi constant filter untuk menyimpan karakteristik pencarian dari user
   const filter = {};

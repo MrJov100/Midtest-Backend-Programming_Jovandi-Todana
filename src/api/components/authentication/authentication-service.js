@@ -2,6 +2,14 @@ const authenticationRepository = require('./authentication-repository');
 const { generateToken } = require('../../../utils/session-token');
 const { passwordMatched } = require('../../../utils/password');
 
+const waktuTerakhirLogin = {};
+
+const percobaanLoginGagal = {};
+
+const batasGagalLogin = 5;
+
+const hukumanWaktuTunggu = 30 * 60 * 1000; // hitungan ini berarti 30 menit dalam milidetik
+
 /**
  * Check username and password for login.
  * @param {string} email - Email
@@ -10,6 +18,18 @@ const { passwordMatched } = require('../../../utils/password');
  */
 async function checkLoginCredentials(email, password) {
   const user = await authenticationRepository.getUserByEmail(email);
+
+  // Fungsi pengecekan apabila email user sudah melebihi batasGagalLogin
+  if (
+    percobaanLoginGagal[email] >= batasGagalLogin &&
+    Date.now() - waktuTerakhirLogin[email] < hukumanWaktuTunggu
+  ) {
+    // Apabila user gagal login sebanyak 5 kali, akan mendapat error
+    // dan pesan bahwa gagal login melebihi limit
+    throw new Error(
+      'Anda mencoba login, namun mendapat error 403 karena telah melebihi limit attempt. Silahkan tunggu 30 menit!'
+    );
+  }
 
   // We define default user password here as '<RANDOM_PASSWORD_FILTER>'
   // to handle the case when the user login is invalid. We still want to
@@ -22,15 +42,40 @@ async function checkLoginCredentials(email, password) {
   // login attempt as successful when the `user` is found (by email) and
   // the password matches.
   if (user && passwordChecked) {
+    // Fungsi ini bekerja apabila user berhasil login
+    // Fungsi akan memulai kembali perhitungan gagal login dan waktu login
+    resetPemeriksaanGagalLogin(email);
+
     return {
       email: user.email,
       name: user.name,
       user_id: user.id,
       token: generateToken(user.email, user.id),
     };
+  } else {
+    // Fungsi ini akan menghitung dan menyimpan jumlah user gagal login
+    waktuTerakhirLogin[email] = Date.now();
+    // Menghitung jumlah percobaan gagal logil pada email user
+    percobaanLoginGagal[email] = (percobaanLoginGagal[email] || 0) + 1;
+
+    // Apabila user gagal login sebanyak 5 kali, sistem akan melempar error
+    if (percobaanLoginGagal[email] >= batasGagalLogin) {
+      throw new Error(
+        'Anda mencoba login, namun mendapat error 403 karena telah melebihi limit attempt. Silahkan tunggu 30 menit!'
+      );
+    }
   }
 
   return null;
+}
+
+/**
+ * Fungsi ini berguna untuk memulai kembali semua perhitungan gagal login
+ * @param {string} email - email user
+ */
+function resetPemeriksaanGagalLogin(email) {
+  percobaanLoginGagal[email] = 0;
+  waktuTerakhirLogin[email] = null;
 }
 
 module.exports = {

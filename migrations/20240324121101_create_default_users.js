@@ -7,26 +7,6 @@ const name = 'Administrator';
 const email = 'admin@example.com';
 const password = '123456';
 
-const coupons_date_expired = '2024/01/01';
-const coupons_name = 'KUPON24';
-const coupons_discount_percentage = '24';
-const coupons_term_and_conditions = 'Syarat & Kondisi Berlaku';
-
-(async () => {
-  try {
-    await Coupon.create({
-      coupons_date_expired,
-      coupons_name,
-      coupons_discount_percentage,
-      coupons_term_and_conditions,
-    });
-  } catch (e) {
-    logger.error(e);
-  } finally {
-    process.exit(0);
-  }
-})();
-
 logger.info('Creating default users');
 
 (async () => {

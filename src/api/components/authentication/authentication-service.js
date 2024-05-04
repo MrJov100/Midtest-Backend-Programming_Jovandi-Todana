@@ -28,8 +28,8 @@ async function checkLoginCredentials(email, password) {
     // dan pesan bahwa gagal login melebihi limit
     throw {
       statusCode: 403,
-      error: 'Forbidden',
-      description: 'Too many failed login attempts',
+      error: 'FORBIDDEN',
+      description: 'TOO MANY FAILED LOGIN ATTEMPTS',
       message:
         'Anda telah mencoba login melebihi limit attempt! Silahkan tunggu 30 menit untuk mencoba lagi!',
     };
@@ -66,8 +66,9 @@ async function checkLoginCredentials(email, password) {
     if (percobaanLoginGagal[email] >= batasGagalLogin) {
       throw {
         statusCode: 403,
-        error: 'Forbidden',
-        description: 'Too many failed login attempts',
+        statusCode: 403,
+        error: 'FORBIDDEN',
+        description: 'TOO MANY FAILED LOGIN ATTEMPTS',
         message:
           'Anda telah mencoba login melebihi limit attempt! Silahkan tunggu 30 menit untuk mencoba lagi!',
       };

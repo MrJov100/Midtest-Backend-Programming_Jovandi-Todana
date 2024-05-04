@@ -1,5 +1,3 @@
-const { date } = require('joi');
-
 const couponsSchema = {
   coupons_date_expired: String,
   coupons_name: String,

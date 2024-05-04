@@ -31,7 +31,7 @@ async function checkLoginCredentials(email, password) {
       error: 'Forbidden',
       description: 'Too many failed login attempts',
       message:
-        'Anda telah mencoba login terlalu banyak kali. Silahkan tunggu sebentar sebelum mencoba lagi.',
+        'Anda telah mencoba login melebihi limit attempt! Silahkan tunggu 30 menit untuk mencoba lagi!',
     };
   }
 
@@ -69,7 +69,7 @@ async function checkLoginCredentials(email, password) {
         error: 'Forbidden',
         description: 'Too many failed login attempts',
         message:
-          'Anda telah mencoba login terlalu banyak kali. Silahkan tunggu sebentar sebelum mencoba lagi.',
+          'Anda telah mencoba login melebihi limit attempt! Silahkan tunggu 30 menit untuk mencoba lagi!',
       };
     }
   }

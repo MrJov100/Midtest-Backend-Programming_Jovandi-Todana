@@ -27,7 +27,19 @@ async function login(request, response, next) {
 
     return response.status(200).json(loginSuccess);
   } catch (error) {
-    return next(error);
+    // Tangani kesalahan dengan benar
+    if (error.statusCode && error.statusCode === 403) {
+      // Jika kode status adalah 403, kirim respons dengan status 403
+      return response.status(403).json({
+        statusCode: error.statusCode,
+        error: error.error,
+        description: error.description,
+        message: error.message,
+      });
+    } else {
+      // Jika kode status bukan 403, lempar kesalahan ke middleware berikutnya
+      return next(error);
+    }
   }
 }
 

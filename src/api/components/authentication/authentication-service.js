@@ -26,9 +26,16 @@ async function checkLoginCredentials(email, password) {
   ) {
     // Apabila user gagal login sebanyak 5 kali, akan mendapat error
     // dan pesan bahwa gagal login melebihi limit
-    throw new Error(
-      'Anda mencoba login, namun mendapat error 403 karena telah melebihi limit attempt. Silahkan tunggu 30 menit!'
-    );
+    // throw new Error(
+    //   'Anda mencoba login, namun mendapat error 403 karena telah melebihi limit attempt. Silahkan tunggu 30 menit!'
+    // );
+    throw {
+      statusCode: 403,
+      error: 'Forbidden',
+      description: 'Too many failed login attempts',
+      message:
+        'Anda telah mencoba login terlalu banyak kali. Silahkan tunggu sebentar sebelum mencoba lagi.',
+    };
   }
 
   // We define default user password here as '<RANDOM_PASSWORD_FILTER>'
@@ -60,9 +67,16 @@ async function checkLoginCredentials(email, password) {
 
     // Apabila user gagal login sebanyak 5 kali, sistem akan melempar error
     if (percobaanLoginGagal[email] >= batasGagalLogin) {
-      throw new Error(
-        'Anda mencoba login, namun mendapat error 403 karena telah melebihi limit attempt. Silahkan tunggu 30 menit!'
-      );
+      // throw new Error(
+      //   'Anda mencoba login, namun mendapat error 403 karena telah melebihi limit attempt. Silahkan tunggu 30 menit!'
+      // );
+      throw {
+        statusCode: 403,
+        error: 'Forbidden',
+        description: 'Too many failed login attempts',
+        message:
+          'Anda telah mencoba login terlalu banyak kali. Silahkan tunggu sebentar sebelum mencoba lagi.',
+      };
     }
   }
 

@@ -1,24 +1,32 @@
 const couponsRepository = require('./coupons-repository');
 
-// Fungsi untuk mendapatkan semua kupon
 /**
+ * Fungsi ini untuk mendapatkan semua kupon
+ * @param {Object} options
  * @returns {Array}
  */
-async function getCoupons() {
-  const coupons = await couponsRepository.getCoupons();
+async function getCoupons(options) {
+  const coupons = await couponsRepository.getCoupons(options);
 
-  const results = [];
-  for (let i = 0; i < coupons.length; i += 1) {
-    const coupon = coupons[i];
-    results.push({
-      id: coupon._id, // Menggunakan _id sebagai ID kupon
-      coupons_date_expired: coupon.coupons_date_expired,
-      coupons_name: coupon.coupons_name,
-      coupons_discount_percentage: coupon.coupons_discount_percentage,
-      coupons_term_and_conditions: coupon.coupons_term_and_conditions,
-    });
-  }
-  return results;
+  // Menampilkan data kupon
+  const results = coupons.data.map((coupon) => ({
+    id: coupon._id, // Menggunakan _id sebagai ID kupon
+    coupons_date_expired: coupon.coupons_date_expired,
+    coupons_name: coupon.coupons_name,
+    coupons_discount_percentage: coupon.coupons_discount_percentage,
+    coupons_term_and_conditions: coupon.coupons_term_and_conditions,
+  }));
+
+  // fungsi ini akan menampilkan semua daftar yang perlu ditampilkan
+  return {
+    page_number: coupons.page_number, // menampilkan nomor halaman
+    page_size: coupons.page_size, // menampilkan banyak pengguna tiap halaman
+    count: coupons.count, // menampilkan total pengguna
+    total_pages: coupons.total_pages, // menampilkan total halaman
+    has_previous_page: coupons.has_previous_page, // menyatakan halaman sebelumnya dengan true / false
+    has_next_page: coupons.has_next_page, // menyatakan halaman selanjutnya dengan true / false
+    data: results, // data kupon
+  };
 }
 
 /**
@@ -28,7 +36,7 @@ async function getCoupons() {
 async function getCoupon(id) {
   const coupon = await couponsRepository.getCoupon(id);
 
-  // Kupon tidak ditemukan
+  // Jika kupon tidak ditemukan, maka kembalikan null
   if (!coupon) {
     return null;
   }
@@ -42,8 +50,8 @@ async function getCoupon(id) {
   };
 }
 
-// Fungsi untuk membuat kupon baru
 /**
+ * Fungsi ini untuk membuat kupon baru
  * @param {string} coupons_date_expired
  * @param {string} coupons_name
  * @param {number} coupons_discount_percentage
@@ -69,8 +77,8 @@ async function createCoupon(
   }
 }
 
-// Fungsi untuk memperbarui kupon
 /**
+ * Fungsi ini untuk memperbarui kupon
  * @param {string} id
  * @param {string} coupons_date_expired
  * @param {string} coupons_name
@@ -99,9 +107,8 @@ async function updateCoupon(
   }
 }
 
-// Fungsi untuk menghapus kupon
 /**
- *
+ * Fungsi ini untuk menghapus kupon
  * @param {string} id
  * @returns {boolean}
  */
@@ -114,7 +121,6 @@ async function deleteCoupon(id) {
   }
 }
 
-// Ekspor fungsi-fungsi agar dapat digunakan oleh file lainnya
 module.exports = {
   getCoupons,
   getCoupon,

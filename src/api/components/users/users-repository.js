@@ -41,7 +41,7 @@ async function getUsers(options) {
   // menjalankan fungsi query untuk mendapat data user yang sesuai
   const data = await query.exec();
 
-  // fungsi total_pages untuk menghitung total halaman
+  // fungsi total_pages untuk menghitung total halaman menggunakan fungsi Math.ceil
   const total_pages = Math.ceil(count / page_size);
   // fungsi untuk memeriksa apakah halaman sebelum dan selanjutnya tersedia
   const has_previous_page = page_number > 1;

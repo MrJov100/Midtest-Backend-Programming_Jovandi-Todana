@@ -10,11 +10,11 @@ const route = express.Router();
 module.exports = (app) => {
   app.use('/coupons', route);
 
-  // Definisikan rute untuk mendapatkan semua kupon
+  // rute untuk mendapatkan semua kupon
   route.get('/', authenticationMiddleware, couponsControllers.getCoupons);
 
   route.get('/:id', authenticationMiddleware, couponsControllers.getCoupon);
-  // Definisikan rute untuk membuat kupon baru
+  // rute untuk membuat kupon baru
   route.post(
     '/',
     authenticationMiddleware,
@@ -22,7 +22,7 @@ module.exports = (app) => {
     couponsControllers.createCoupon
   );
 
-  // Definisikan rute untuk memperbarui kupon
+  // rute untuk memperbarui kupon
   route.put(
     '/:id',
     authenticationMiddleware,
@@ -30,7 +30,7 @@ module.exports = (app) => {
     couponsControllers.updateCoupon
   );
 
-  // Definisikan rute untuk menghapus kupon
+  // rute untuk menghapus kupon
   route.delete(
     '/:id',
     authenticationMiddleware,

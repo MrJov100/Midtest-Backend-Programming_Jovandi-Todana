@@ -14,7 +14,9 @@ async function getUsers(options) {
   // Menampilkan data pengguna seperti id, name, email
   const results = users.data.map((user) => ({
     id: user.id,
+
     name: user.name,
+
     email: user.email,
   }));
 

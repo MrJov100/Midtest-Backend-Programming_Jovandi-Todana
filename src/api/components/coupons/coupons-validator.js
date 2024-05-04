@@ -1,7 +1,4 @@
 const joi = require('joi');
-const { createCoupon } = require('./coupons-repository');
-const { update } = require('lodash');
-const { updateCoupons } = require('./coupons-controller');
 
 module.exports = {
   createCoupon: {

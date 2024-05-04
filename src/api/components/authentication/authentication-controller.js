@@ -27,9 +27,8 @@ async function login(request, response, next) {
 
     return response.status(200).json(loginSuccess);
   } catch (error) {
-    // Tangani kesalahan dengan benar
+    // Jika kode status adalah 403, kirim respons dengan status 403
     if (error.statusCode && error.statusCode === 403) {
-      // Jika kode status adalah 403, kirim respons dengan status 403
       return response.status(403).json({
         statusCode: error.statusCode,
         error: error.error,

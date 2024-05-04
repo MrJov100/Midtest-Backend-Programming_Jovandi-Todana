@@ -13,7 +13,9 @@ module.exports = (app) => {
   // rute untuk mendapatkan semua kupon
   route.get('/', authenticationMiddleware, couponsControllers.getCoupons);
 
+  // rute untuk mendapatkan kupon sesuai id
   route.get('/:id', authenticationMiddleware, couponsControllers.getCoupon);
+
   // rute untuk membuat kupon baru
   route.post(
     '/',

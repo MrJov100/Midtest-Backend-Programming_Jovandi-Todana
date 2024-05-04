@@ -30,10 +30,11 @@ async function getCoupons(options) {
 }
 
 /**
- * @param {string} id
- * @returns {Object}
+ * @param {string} id - Parameter id adalah ID kupon yang akan dicari
+ * @returns {Object} - Mengembalikan objek kupon jika ditemukan, jika tidak, kembalikan null
  */
 async function getCoupon(id) {
+  // Mengambil data kupon dari repository
   const coupon = await couponsRepository.getCoupon(id);
 
   // Jika kupon tidak ditemukan, maka kembalikan null
@@ -52,11 +53,11 @@ async function getCoupon(id) {
 
 /**
  * Fungsi ini untuk membuat kupon baru
- * @param {string} coupons_date_expired
- * @param {string} coupons_name
- * @param {number} coupons_discount_percentage
- * @param {string} coupons_term_and_conditions
- * @returns {boolean}
+ * @param {string} coupons_date_expired - tanggal kedaluwarsa kupon
+ * @param {string} coupons_name - nama kupon
+ * @param {number} coupons_discount_percentage - persentase diskon kupon
+ * @param {string} coupons_term_and_conditions - syarat dan ketentuan kupon
+ * @returns {boolean} - Mengembalikan true jika kupon berhasil dibuat
  */
 async function createCoupon(
   coupons_date_expired,
@@ -65,26 +66,29 @@ async function createCoupon(
   coupons_term_and_conditions
 ) {
   try {
+    // Mendefinisikan fungsi asynchronous untuk membuat kupon baru
     await couponsRepository.createCoupon(
+      // Mencoba membuat kupon baru dengan menggunakan repository
       coupons_date_expired,
       coupons_name,
       coupons_discount_percentage,
       coupons_term_and_conditions
     );
-    return true;
+    return true; // Mengembalikan true jika kupon berhasil dibuat
   } catch (error) {
-    throw new Error('Failed to create new coupon');
+    // Menangkap kesalahan jika gagal membuat kupon
+    throw new Error('Failed to create new coupon'); // Melempar kesalahan dengan pesan yang sesuai
   }
 }
 
 /**
  * Fungsi ini untuk memperbarui kupon
- * @param {string} id
- * @param {string} coupons_date_expired
- * @param {string} coupons_name
- * @param {number} coupons_discount_percentage
- * @param {string} coupons_term_and_conditions
- * @returns {boolean}
+ * @param {string} id - Parameter id adalah ID kupon yang akan diperbarui
+ * @param {string} coupons_date_expired // tanggal kedaluwarsa kupon
+ * @param {string} coupons_name // nama kupon
+ * @param {number} coupons_discount_percentage - persentase diskon kupon
+ * @param {string} coupons_term_and_conditions - syarat dan ketentuan kupon
+ * @returns {boolean} - Mengembalikan true jika kupon berhasil diperbarui
  */
 async function updateCoupon(
   id,
@@ -95,32 +99,36 @@ async function updateCoupon(
 ) {
   try {
     await couponsRepository.updateCoupon(
+      // Mencoba memperbarui kupon dengan menggunakan repository
       id,
       coupons_date_expired,
       coupons_name,
       coupons_discount_percentage,
       coupons_term_and_conditions
     );
-    return true;
+    return true; // Mengembalikan true jika kupon berhasil diperbarui
   } catch (err) {
-    throw new Error('Failed to update coupon');
+    // Menangkap kesalahan jika gagal memperbarui kupon
+    throw new Error('Failed to update coupon'); // Melempar kesalahan dengan pesan yang sesuai
   }
 }
 
 /**
  * Fungsi ini untuk menghapus kupon
- * @param {string} id
- * @returns {boolean}
+ * @param {string} id - Parameter id adalah ID kupon yang akan dihapus.
+ * @returns {boolean} - Mengembalikan true jika kupon berhasil dihapus.
  */
 async function deleteCoupon(id) {
   try {
-    await couponsRepository.deleteCoupon(id);
-    return true;
+    await couponsRepository.deleteCoupon(id); // Mencoba menghapus kupon dengan menggunakan repository
+    return true; // Mengembalikan true jika kupon berhasil dihapus
   } catch (err) {
-    throw new Error('Failed to delete coupon');
+    // Menangkap kesalahan jika gagal menghapus kupon
+    throw new Error('Failed to delete coupon'); // Melempar kesalahan dengan pesan yang sesuai
   }
 }
 
+// Ekspor fungsi-fungsi agar dapat digunakan oleh file lainnya
 module.exports = {
   getCoupons,
   getCoupon,

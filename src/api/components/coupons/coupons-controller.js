@@ -11,6 +11,7 @@ async function getCoupons(request, response, next) {
   try {
     // fungsi constant untuk mendapat paramter query reuqest
     const { page_number, page_size, search, sort } = request.query;
+
     // fungsi constant options untuk menciptakan objek berdasarkan parameter query
     const options = {
       page_number: parseInt(page_number) || 1, // nomor halaman dengan default: 1
@@ -55,8 +56,10 @@ function parseSearchQuery(searchQuery) {
   // fungsi bekerja jika tidak ada query pencarian,
   // maka akan kembalikan sebuah objek ksong
   if (!searchQuery) return {};
+
   // Memecah string query pencarian menjadi field dan kata kunci
   const [field, key] = searchQuery.split(':');
+
   // Mengembalikan objek opsi pencarian
   return { field, key };
 }
@@ -67,19 +70,25 @@ function parseSearchQuery(searchQuery) {
  * @param {object} next - Express route middlewares
  * @returns {object} Response object or pass an error to the next route
  */
+// Fungsi async untuk mendapatkan kupon berdasarkan ID
 async function getCoupon(request, response, next) {
   try {
+    // Mendapatkan ID dari parameter request
     const id = request.params.id;
+    // Mendapatkan kupon dengan ID yang diberikan
     const coupon = await couponsService.getCoupon(id);
 
+    // Jika kupon tidak ditemukan, maka error
     if (!coupon) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
         'Kupon tidak diketahui'
       );
     }
+    // Mengembalikan kupon dalam format JSON jika berhasil
     return response.status(200).json(coupon);
   } catch (error) {
+    // Menangani error dengan meneruskannya ke middleware berikutnya
     return next(error);
   }
 }
@@ -90,8 +99,10 @@ async function getCoupon(request, response, next) {
  * @param {object} next - Express route middlewares
  * @returns {object} Response object or pass an error to the next route
  */
+// Fungsi async untuk membuat kupon baru
 async function createCoupon(request, response, next) {
   try {
+    // Mendapatkan data kupon dari body request
     const {
       coupons_date_expired,
       coupons_name,
@@ -99,6 +110,7 @@ async function createCoupon(request, response, next) {
       coupons_term_and_conditions,
     } = request.body;
 
+    // Membuat kupon dengan data yang diberikan
     const berhasil = await couponsService.createCoupon(
       coupons_date_expired,
       coupons_name,
@@ -106,6 +118,7 @@ async function createCoupon(request, response, next) {
       coupons_term_and_conditions
     );
 
+    // Jika gagal membuat kupon, lemparkan error
     if (!berhasil) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
@@ -113,6 +126,7 @@ async function createCoupon(request, response, next) {
       );
     }
 
+    // Mengembalikan data kupon yang baru dibuat dalam format JSON jika berhasil
     return response.status(200).json({
       coupons_date_expired,
       coupons_name,
@@ -120,23 +134,19 @@ async function createCoupon(request, response, next) {
       coupons_term_and_conditions,
     });
   } catch (error) {
-    // Menampilkan pesan kesalahan lebih rinci
+    // Menangani error dengan mencetak pesan kesalahan dan meneruskannya ke middleware berikutnya
     console.error('Gagal membuat kupon:', error);
-    // Melanjutkan ke middleware error handler berikutnya
     return next(error);
   }
 }
 
-/**
- * @param {object} request - Express request object
- * @param {object} response - Express response object
- * @param {object} next - Express route middlewares
- * @returns {object} Response object or pass an error to the next route
- */
+// Fungsi async untuk mengupdate kupon yang ada
 async function updateCoupon(request, response, next) {
   try {
+    // Mendapatkan ID kupon dari parameter request
     const coupon_id = request.params.id;
 
+    // Mendapatkan data kupon dari body request
     const {
       coupons_date_expired,
       coupons_name,
@@ -144,6 +154,7 @@ async function updateCoupon(request, response, next) {
       coupons_term_and_conditions,
     } = request.body;
 
+    // Mengupdate kupon dengan data yang diberikan
     const berhasil = await couponsService.updateCoupon(
       coupon_id,
       coupons_date_expired,
@@ -152,6 +163,7 @@ async function updateCoupon(request, response, next) {
       coupons_term_and_conditions
     );
 
+    // Jika gagal mengupdate kupon, maka error
     if (!berhasil) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
@@ -159,6 +171,7 @@ async function updateCoupon(request, response, next) {
       );
     }
 
+    // Mengembalikan data kupon yang diupdate dalam format JSON jika berhasil
     return response.status(200).json({
       id: coupon_id,
       coupons_date_expired,
@@ -167,21 +180,20 @@ async function updateCoupon(request, response, next) {
       coupons_term_and_conditions,
     });
   } catch (e) {
+    // Menangani error dengan meneruskannya ke middleware berikutnya
     return next(e);
   }
 }
 
-/**
- * @param {object} request - Express request object
- * @param {object} response - Express response object
- * @param {object} next - Express route middlewares
- * @returns {object} Response object or pass an error to the next route
- */
+// Fungsi async untuk menghapus kupon
 async function deleteCoupon(request, response, next) {
   try {
+    // Mendapatkan ID kupon dari parameter request
     const id = request.params.id;
 
+    // Menghapus kupon berdasarkan ID
     const berhasil = await couponsService.deleteCoupon(id);
+    // Jika gagal menghapus kupon, lemparkan error
     if (!berhasil) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
@@ -189,8 +201,10 @@ async function deleteCoupon(request, response, next) {
       );
     }
 
+    // Mengembalikan data kupon yang dihapus dalam format JSON jika berhasil
     return response.status(200).json({ id: id });
   } catch (err) {
+    // Menangani error dengan meneruskannya ke middleware berikutnya
     return next(err);
   }
 }
